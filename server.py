@@ -13,10 +13,7 @@ class ClientThread(threading.Thread):
                 message = self.client_socket.recv(1024).decode()
                 print('Received from', self.client_address, ':', message)
 
-                if message == 'exit':
-                    break
-
-                # Forward the message to the other client
+                # forwarding message to the other client
                 if self == client_A:
                     client_B.client_socket.sendall(message.encode())
                 else:
@@ -27,32 +24,29 @@ class ClientThread(threading.Thread):
 
         self.client_socket.close()
 
-# Create a TCP/IP socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Define the server address and port
-server_address = ('localhost', 12345)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # creating tcp/ip socket
 
-# Bind the socket to the server address and port
-server_socket.bind(server_address)
+server_address = ('localhost', 12345) # defining server adress and port
 
-# Listen for incoming connections (maximum 2 connections)
-server_socket.listen(2)
+server_socket.bind(server_address) # binding the socket to the server address and port
+
+server_socket.listen(2) # listening for incoming connections
 
 print('Server is running and listening for incoming connections...')
 
-# Accept Client A connection
+# client a connection acceptance
 client_A_socket, client_A_address = server_socket.accept()
 print('Client A connected:', client_A_address)
 
-# Accept Client B connection
+# client b connection acceptance
 client_B_socket, client_B_address = server_socket.accept()
 print('Client B connected:', client_B_address)
 
-# Create client threads
+# client socket threads 
 client_A = ClientThread(client_A_socket, client_A_address)
 client_B = ClientThread(client_B_socket, client_B_address)
 
-# Start the client threads
+# starting the client threads
 client_A.start()
 client_B.start()

@@ -2,6 +2,10 @@ import socket
 import threading
 from util.file_handling import read
 from util.binary_handling import string_to_binary, binary_to_string
+from frame import Frame
+import time
+
+SEND_FILE_PATH = './client_a_files/a.txt'
 
 def receive_messages():
     while True:
@@ -12,30 +16,30 @@ def receive_messages():
             break
 
 def send_messages():
-    while True:
-        print("Type the operation you want to perform:")
-        print("1. Send a file to Client B")
-        print("2. Exit")
+    message = read(SEND_FILE_PATH)
+    message = string_to_binary(message)
 
-        action = int(input("Client A: "))
-        if action == 1:
+    # separating message into frames with 64 bits each
+    id = 0
+    for i in range(0, len(message), 8):
+        frame = Frame(message[i:i+8], id)
+        frame_list.append(frame)
+        id += 1
+    
+    input("Press enter to send the message to the server...")
 
-            path = input("Client A: Type the path of the file you want to send: ")
-            path = './client_a_files/' + path
-            message = read(path)
-            print(message)
-            message = string_to_binary(message)
+    # sending frames to the server in separate messages
+    for frame in frame_list:
+        client_socket.sendall(frame.data.encode())
+        time.sleep(1)
 
-            # Send the message to the server
-            client_socket.sendall(message.encode())
-            
-        elif action == 2:
-            break
-
-        else:
-            pass
+    # Send the message to the server
+    # client_socket.sendall(message.encode())
 
 
+
+# main
+frame_list = []
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # creating tcp/ip socket
 
