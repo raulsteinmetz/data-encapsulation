@@ -2,20 +2,17 @@ import socket
 import threading
 from util.file_handling import read, write
 from util.binary_handling import string_to_binary, binary_to_string
-from frame import Frame
+from frame import Frame, FrameList
 
 
 def receive_messages():
     while True:
         try:
-            message = client_socket.recv(1024).decode()
-            print('Received from server (Client A):', message)
+            frame = client_socket.recv(1024).decode()
+            print('Received from server (Client A):', frame)
 
             # adding message to frame list
-            # get integer id from the first 3 bits
-            frame = Frame()
-            frame.decode_frame(message)
-            frame_list.append(frame)
+            frame_list.add_frame_by_frame(frame)
             
         except ConnectionResetError:
             break
@@ -24,13 +21,11 @@ def send_messages():
     while True:
         message = input("Client B: Enter 'save' to save message received: ") # input message to be sent
 
-        # client_socket.sendall(message.encode()) # send image to server
-
         if message == 'save':
             # writing frames to file
             # create a string with all frames
             message = ''
-            for frame in frame_list:
+            for frame in frame_list.frame_list:
                 message += frame.data
             
             # converting binary string to string
@@ -44,7 +39,7 @@ def send_messages():
 
 # main
 
-frame_list = []
+frame_list = FrameList()
 
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # creting tcp/ip socket

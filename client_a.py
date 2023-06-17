@@ -2,7 +2,7 @@ import socket
 import threading
 from util.file_handling import read
 from util.binary_handling import string_to_binary, binary_to_string
-from frame import Frame
+from frame import Frame, FrameList
 import time
 
 SEND_FILE_PATH = './client_a_files/a.txt'
@@ -20,19 +20,13 @@ def send_messages():
     message = string_to_binary(message)
 
     # separating message into frames with 64 bits each
-    id = 0
     for i in range(0, len(message), 8):
-        frame = Frame()
-        frame.code_frame(message[i:i+8], id)
-        frame_list.append(frame)
-        id += 1
-        if (id > 7):
-            id = 0
+        frame_list.add_frame_by_message(message[i:i+8])
     
     input("Press enter to send the message to the server...")
 
     # sending frames to the server in separate messages
-    for frame in frame_list:
+    for frame in frame_list.frame_list:
         client_socket.sendall(frame.entire_frame.encode())
         time.sleep(0.1)
 
@@ -40,7 +34,7 @@ def send_messages():
 
 
 # main
-frame_list = []
+frame_list = FrameList()
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # creating tcp/ip socket
 
