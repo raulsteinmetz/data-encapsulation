@@ -22,19 +22,20 @@ def send_messages():
     # separating message into frames with 64 bits each
     id = 0
     for i in range(0, len(message), 8):
-        frame = Frame(message[i:i+8], id)
+        frame = Frame()
+        frame.code_frame(message[i:i+8], id)
         frame_list.append(frame)
         id += 1
+        if (id > 7):
+            id = 0
     
     input("Press enter to send the message to the server...")
 
     # sending frames to the server in separate messages
     for frame in frame_list:
-        client_socket.sendall(frame.data.encode())
-        time.sleep(1)
+        client_socket.sendall(frame.entire_frame.encode())
+        time.sleep(0.1)
 
-    # Send the message to the server
-    # client_socket.sendall(message.encode())
 
 
 

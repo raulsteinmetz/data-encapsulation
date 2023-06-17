@@ -10,13 +10,13 @@ def receive_messages():
         try:
             message = client_socket.recv(1024).decode()
             print('Received from server (Client A):', message)
-            # message = binary_to_string(message)
 
             # adding message to frame list
-            frame_list.append(Frame(message, 0))
+            # get integer id from the first 3 bits
+            frame = Frame()
+            frame.decode_frame(message)
+            frame_list.append(frame)
             
-            
-            # write('./client_b_files/received_file.txt', message)
         except ConnectionResetError:
             break
 

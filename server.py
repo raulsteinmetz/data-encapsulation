@@ -75,7 +75,7 @@ class ClientThread(threading.Thread):
                 print('Received from', self.client_address, ':', message)
 
                 # message = channel_noise.bit_error(message)
-                message = channel_noise.burst_error(message)
+                # message = channel_noise.burst_error(message)
 
                 # forwarding message to the other client
                 if self == client_A:
