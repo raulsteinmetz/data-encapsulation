@@ -33,6 +33,34 @@ class ChannelNoise():
         return modified_message
 
 
+    # implements burst error
+    def burst_error(self, message):
+        random_number = random.random()
+        initial_position = 0
+        if (random_number < 0.1):
+            self.burst_error_lenght = 10
+            self.burst_error_counter = 0
+            print('!!!burst error!!!')
+            print('burst error lenght:', self.burst_error_lenght)
+
+            initial_position = random.randint(0, len(message) - 1)
+
+        if self.burst_error_counter < self.burst_error_lenght:
+            print('message:', message)
+            for i in range(initial_position, len(message)):
+                if self.burst_error_counter == self.burst_error_lenght:
+                    break
+
+                message_list = list(message)
+                message_list[i] = '1' if message_list[i] == '0' else '0'
+                message = "".join(message_list)
+                self.burst_error_counter += 1
+
+            print('noise affected message:', message)
+        return message
+        
+
+        
 
 class ClientThread(threading.Thread):
     def __init__(self, client_socket, client_address):
@@ -47,7 +75,7 @@ class ClientThread(threading.Thread):
                 print('Received from', self.client_address, ':', message)
 
                 # message = channel_noise.bit_error(message)
-                # message = channel_noise.burst_error(message)
+                message = channel_noise.burst_error(message)
 
                 # forwarding message to the other client
                 if self == client_A:
