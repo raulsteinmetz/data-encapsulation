@@ -1,5 +1,38 @@
 import socket
 import threading
+import random
+
+
+BIT_ERROR_CHANCE = 0.1
+BURST_ERROR_CHANCE = 0.1
+
+class ChannelNoise():
+    def __init__(self):
+        self.burst_error_lenght = -1
+        self.burst_error_counter = 0
+        self.bit_error_chance = BIT_ERROR_CHANCE
+        self.burst_error_chance = BURST_ERROR_CHANCE
+
+    # implements bit error
+    def bit_error(self, message):
+        modified_message = message
+        # randomize number between 0 and 1 
+        random_number = random.random()
+        
+        if random_number < self.bit_error_chance:
+            print('!!!bit error!!!')
+            print('message:', message)
+            # randomize position of bit to be flipped
+            random_position = random.randint(0, len(message) - 1)
+            # flip bit
+            message_list = list(message)
+            message_list[random_position] = '1' if message_list[random_position] == '0' else '0'
+            modified_message = "".join(message_list)
+            print('noise affected message:', modified_message)
+
+        return modified_message
+
+
 
 class ClientThread(threading.Thread):
     def __init__(self, client_socket, client_address):
@@ -13,6 +46,9 @@ class ClientThread(threading.Thread):
                 message = self.client_socket.recv(1024).decode()
                 print('Received from', self.client_address, ':', message)
 
+                # message = channel_noise.bit_error(message)
+                # message = channel_noise.burst_error(message)
+
                 # forwarding message to the other client
                 if self == client_A:
                     client_B.client_socket.sendall(message.encode())
@@ -24,6 +60,8 @@ class ClientThread(threading.Thread):
 
         self.client_socket.close()
 
+
+channel_noise = ChannelNoise()
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # creating tcp/ip socket
 
