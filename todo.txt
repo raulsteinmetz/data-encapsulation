@@ -1,0 +1,5 @@
+ainda falta:
+    - detectar erros com CRC 
+    - controle de fluxo (go-back-n arq ou selective repeat arq)
+    - tamanho de quadro variavel
+    
