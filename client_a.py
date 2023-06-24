@@ -28,7 +28,7 @@ def send_messages():
     # sending frames to the server in separate messages
     for frame in frame_list.frame_list:
         client_socket.sendall(frame.entire_frame.encode())
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 
 
