@@ -1,5 +1,9 @@
 ainda falta:
-    - detectar erros com CRC 
+    - detectar erros com CRC
+        a - codigos do crc com bug 
+        b - falta funcao que verifica o que eh crc e tira da mensagem
     - controle de fluxo (go-back-n arq ou selective repeat arq)
+        c - raul faz
     - tamanho de quadro variavel
+        d - se der tempo e vontade eh com vcs
     
