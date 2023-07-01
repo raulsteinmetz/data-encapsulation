@@ -4,8 +4,10 @@ from util.file_handling import read
 from util.binary_handling import string_to_binary, binary_to_string
 from frame import Frame, FrameList
 import time
+import crc
 
 SEND_FILE_PATH = './client_a_files/a.txt'
+
 
 def receive_messages():
     while True:
@@ -19,9 +21,11 @@ def send_messages():
     message = read(SEND_FILE_PATH)
     message = string_to_binary(message)
 
-    # separating message into frames with 64 bits each
-    for i in range(0, len(message), 8):
-        frame_list.add_frame_by_message(message[i:i+8])
+    # separating message into frames with 32 bits each
+    for i in range(0, len(message), 24):
+        message_to_be_added = message[i:i+24]
+        message_to_be_added = crc.generate_crc(message_to_be_added, crc.crc_polynomium)
+        frame_list.add_frame_by_message(message_to_be_added)
     
     input("Press enter to send the message to the server...")
 

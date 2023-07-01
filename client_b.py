@@ -3,13 +3,17 @@ import threading
 from util.file_handling import read, write
 from util.binary_handling import string_to_binary, binary_to_string
 from frame import Frame, FrameList
-
+import crc
 
 def receive_messages():
     while True:
         try:
             frame = client_socket.recv(1024).decode()
             print('Received from server (Client A):', frame)
+            frame_ = Frame()
+            frame_.decode_frame(frame)
+            crc.check_crc(frame_.data, crc.crc_polynomium)
+            frame = frame_.entire_frame[:-7]
 
             # adding message to frame list
             frame_list.add_frame_by_frame(frame)
