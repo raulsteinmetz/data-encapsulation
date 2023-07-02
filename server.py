@@ -3,8 +3,9 @@ import threading
 import random
 
 
-BIT_ERROR_CHANCE = 0.1
-BURST_ERROR_CHANCE = 0.1
+BIT_ERROR_CHANCE = 0
+BURST_ERROR_CHANCE = 0
+LOSE_FRAME_CHANCE = 0
 
 class ChannelNoise():
     def __init__(self):
@@ -12,6 +13,7 @@ class ChannelNoise():
         self.burst_error_counter = 0
         self.bit_error_chance = BIT_ERROR_CHANCE
         self.burst_error_chance = BURST_ERROR_CHANCE
+        self.lose_frame_chance = LOSE_FRAME_CHANCE
 
     # implements bit error
     def bit_error(self, message):
@@ -59,7 +61,6 @@ class ChannelNoise():
             print('noise affected message:', message)
         return message
         
-
         
 
 class ClientThread(threading.Thread):
@@ -74,14 +75,15 @@ class ClientThread(threading.Thread):
                 message = self.client_socket.recv(1024).decode()
                 print('Received from', self.client_address, ':', message)
 
-                # message = channel_noise.bit_error(message)
-                # message = channel_noise.burst_error(message)
+                message = channel_noise.bit_error(message)
+                message = channel_noise.burst_error(message)
 
                 # forwarding message to the other client
-                if self == client_A:
-                    client_B.client_socket.sendall(message.encode())
-                else:
-                    client_A.client_socket.sendall(message.encode())
+                if (random.random() > channel_noise.lose_frame_chance):
+                    if self == client_A:
+                        client_B.client_socket.sendall(message.encode())
+                    else:
+                        client_A.client_socket.sendall(message.encode())
 
             except ConnectionResetError:
                 break

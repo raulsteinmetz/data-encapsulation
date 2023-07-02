@@ -10,10 +10,18 @@ def receive_messages():
         try:
             frame = client_socket.recv(1024).decode()
             print('Received from server (Client A):', frame)
+
             frame_ = Frame()
             frame_.decode_frame(frame)
-            crc.check_crc(frame_.data, crc.crc_polynomium)
-            frame = frame_.entire_frame[:-7]
+
+            # getting id in binary
+            id_ = bin(frame_.id)[2:].zfill(3)
+            # making it a string
+            id_ = str(id_)
+
+
+            # send message to server
+            client_socket.sendall(id_.encode())
 
             # adding message to frame list
             frame_list.add_frame_by_frame(frame)
@@ -21,9 +29,9 @@ def receive_messages():
         except ConnectionResetError:
             break
 
-def send_messages():
+def log():
     while True:
-        message = input("Client B: Enter 'save' to save message received: ") # input message to be sent
+        message = input("Enter 'save' to save message received: ") # input message to be sent
 
         if message == 'save':
             # writing frames to file
@@ -55,7 +63,7 @@ client_socket.connect(server_address) # connecting to server
 receive_thread = threading.Thread(target=receive_messages) # thread that receives messages
 receive_thread.start()
 
-send_thread = threading.Thread(target=send_messages) # thread that sends messages
+send_thread = threading.Thread(target=log) # thread that sends messages
 send_thread.start()
 
 
