@@ -31,6 +31,7 @@ def send_messages():
     # separating message into frames with 32 bits each
     for i in range(0, len(message), 24):
         message_to_be_added = message[i:i+24]
+        message_to_be_added = crc.generate_crc(message_to_be_added, crc.crc_polynomium)
         frame_list.add_frame_by_message(message_to_be_added)
     
     input("Press enter to send the message to the server...")

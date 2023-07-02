@@ -57,14 +57,7 @@ def subtract(v1, v2): #v1 - v2
     return remove_non_significant_zeroes(subtracted[::-1]) #reverses number
 
 def xor(c1, c2):
-    if c1 == "1" and c2 == "1":
-        return "0"
-    elif c1 == "1" and c2 == "0":
-        return "1"
-    elif c1 == "0" and c2 == "0":
-        return "0"
-    elif c1 == "0" and c2 == "1":
-        return "1"
+    return str(int(c1) ^ int(c2));
 
 def xor_division(recDividend, divisor):
     dividend = list(recDividend)
@@ -78,7 +71,10 @@ def xor_division(recDividend, divisor):
             dividend[i+j] = xor(dividend[i+j], divisor[j])
             j+= 1
         i += 1
-    return remove_non_significant_zeroes("".join(dividend))
+    aux = remove_non_significant_zeroes("".join(dividend))
+    if(len(aux) < (len(divisor)-1)):
+        aux = '0'*((len(divisor)-1)-len(aux))+aux;
+    return aux;
 
 def generate_crc(data, polynomium):
     #maybe transform the polynomium instead of just passing a binary divisor
@@ -87,25 +83,24 @@ def generate_crc(data, polynomium):
     division_data = data + ("0"*(len(polynomium)-1)) #evil string multiplication
     divisor = polynomium
     remainder = xor_division(division_data, divisor)
+    
     generatedBin = data + remainder
     print(f'o binario gerado eh {generatedBin} com resto {remainder}')
     return generatedBin
 
 def check_crc(encoded, polynomium):
     remainder = xor_division(encoded, polynomium)
-    # print(f"o resto eh {remainder}")
-    if len(remainder) == 0:
-        return True
-    else:
-        print("Error in message CRC!")
-        return False
+    for bit in remainder:
+        if int(bit):
+            print('CRC is not valid')
+            return False
+    return True
 
 
 if __name__ == '__main__':
-    to_encode = "11100110111001101110011011100110"
+    to_encode = "10110011001011100110111000"
     polynomium = "11010110"
     encoded = generate_crc(to_encode, polynomium)
     crc_right = check_crc(encoded, polynomium)
     print('Lenght of encoded: ', len(encoded))
     print('Original Lenght: ', len(to_encode))
-

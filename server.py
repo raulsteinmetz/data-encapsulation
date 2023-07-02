@@ -39,7 +39,7 @@ class ChannelNoise():
     def burst_error(self, message):
         random_number = random.random()
         initial_position = 0
-        if (random_number < 0.1):
+        if (random_number < self.burst_error_chance):
             self.burst_error_lenght = 10
             self.burst_error_counter = 0
             print('!!!burst error!!!')

@@ -19,6 +19,8 @@ def receive_messages():
             # making it a string
             id_ = str(id_)
 
+            crc.check_crc(frame_.data, crc.crc_polynomium)
+
 
             # send message to server
             client_socket.sendall(id_.encode())
