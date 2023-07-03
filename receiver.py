@@ -5,7 +5,14 @@ from util.binary_handling import string_to_binary, binary_to_string
 from frame import Frame, FrameList
 import crc
 
+class Receiver:
+    def __init__(self):
+        self.expected_id = 0
+
 def receive_messages():
+
+    receiver = Receiver()
+
     while True:
         try:
             frame = client_socket.recv(1024).decode()
@@ -19,15 +26,29 @@ def receive_messages():
             # making it a string
             id_ = str(id_)
 
-            crc.check_crc(frame_.data, crc.crc_polynomium)
+            crcCheck = crc.check_crc(frame_.data, crc.crc_polynomium)
 
+            decID = int(id_, 2)
 
-            # send message to server
-            client_socket.sendall(id_.encode())
+            if crcCheck == True and decID == receiver.expected_id:
+                # send message to server
+                client_socket.sendall(id_.encode())
 
-            # adding message to frame list
-            frame_list.add_frame_by_frame(frame)
-            
+                # adding message to frame list
+                frame_list.add_frame_by_frame(frame[:27])
+
+                receiver.expected_id += 1
+                if receiver.expected_id == 7:
+                    receiver.expected_id = 0
+                
+                message = ''
+                for frame in frame_list.frame_list:
+                    message += frame.data
+                
+                # converting binary string to string
+                message = binary_to_string(message)
+                print(message)
+                
         except ConnectionResetError:
             break
 
@@ -46,7 +67,10 @@ def log():
             message = binary_to_string(message)
             print(message)
             # saving
-            write('./client_b_files/received_file.txt', message)
+            try:
+                write('./client_b_files/received_file.txt', message[:-1])
+            except:
+                print('Error while saving file.')
 
             break
 

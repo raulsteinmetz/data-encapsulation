@@ -30,7 +30,7 @@ class FrameList:
         frame.code_frame(message, self.id_counter)
         self.frame_list.append(frame)
         self.id_counter += 1
-        if (self.id_counter > 7):
+        if (self.id_counter == 7):
             self.id_counter = 0
     
     def add_frame_by_frame(self, frame_string):
@@ -38,5 +38,5 @@ class FrameList:
         frame.decode_frame(frame_string)
         self.frame_list.append(frame)
         self.id_counter += 1
-        if (self.id_counter > 7):
+        if (self.id_counter == 7):
             self.id_counter = 0

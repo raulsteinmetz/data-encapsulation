@@ -101,6 +101,6 @@ if __name__ == '__main__':
     to_encode = "10110011001011100110111000"
     polynomium = "11010110"
     encoded = generate_crc(to_encode, polynomium)
-    crc_right = check_crc(encoded, polynomium)
+    crc_right = check_crc("0110010000001100011011011110110010", polynomium)
     print('Lenght of encoded: ', len(encoded))
     print('Original Lenght: ', len(to_encode))
