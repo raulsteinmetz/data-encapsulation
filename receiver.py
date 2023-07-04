@@ -68,7 +68,7 @@ def log():
             print(message)
             # saving
             try:
-                write('./client_b_files/received_file.txt', message[:-1])
+                write('./client_b_files/received_file.txt', message[:-2])
             except:
                 print('Error while saving file.')
 

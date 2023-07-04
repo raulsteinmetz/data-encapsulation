@@ -1,4 +1,4 @@
-crc_polynomium = "11010110"
+crc_polynomium = "110101100011010"
 
 def remove_non_significant_zeroes(str):
     i = 0

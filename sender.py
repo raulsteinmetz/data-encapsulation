@@ -50,7 +50,6 @@ def send_messages():
             if i < len(sender.frame_list.frame_list):
                 client_socket.sendall(sender.frame_list.frame_list[i].entire_frame.encode())
                 time.sleep(0.01)
-        print(sender.window_start)
         time.sleep(0.5)
         
 def return_frame_list():
