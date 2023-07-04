@@ -38,12 +38,6 @@ def send_messages():
     global sender
 
     input("Press enter to send the message to the server...")
-
-    # sending frames to the server in separate messages
-    # for frame in sender.frame_list.frame_list:
-        # client_socket.sendall(frame.entire_frame.encode())
-        # time.sleep(0.01)
-        # aqui tem que fazer o sistema da janela do n arq
     
     while sender.window_start < len(sender.frame_list.frame_list):
         for i in range(sender.window_start, sender.window_start + sender.window_size):

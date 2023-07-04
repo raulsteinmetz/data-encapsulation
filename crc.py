@@ -85,7 +85,6 @@ def generate_crc(data, polynomium):
     remainder = xor_division(division_data, divisor)
     
     generatedBin = data + remainder
-    print(f'o binario gerado eh {generatedBin} com resto {remainder}')
     return generatedBin
 
 def check_crc(encoded, polynomium):

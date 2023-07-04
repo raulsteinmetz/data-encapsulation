@@ -47,8 +47,6 @@ def receive_messages():
                 
                 # converting binary string to string
                 message = binary_to_string(message)
-                print(message)
-                
         except ConnectionResetError:
             break
 
@@ -65,7 +63,7 @@ def log():
             
             # converting binary string to string
             message = binary_to_string(message)
-            print(message)
+
             # saving
             try:
                 write('./client_b_files/received_file.txt', message[:-2])
